@@ -7,9 +7,105 @@
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
   </head>
   <body class="mixpanel-platform-body">
-    <h1>Hello, World!</h1>
+    
+    <div class="mixpanel-platform-section">
+      <h1>Start & Complete Registration</h1>
+      <div style="clear: both;"></div>
+      <div id="Registration" class="report"></div>
+      <h1>Subscription Purchased by Platform</h1>
+      <div style="clear: both;"></div>
+      <div id="SubscriptionPlatform" class="report"></div>
+      <h1>Membership & Checkout Pages</h1>
+      <div style="clear: both;"></div>
+      <div id="Membership" class="report"></div>
+      <h1>Completed Games by Platform</h1>
+      <div style="clear: both;"></div>
+      <div id="GamesPlatform" class="report"></div>
+      <h1>Tactics, Lessons, Videos, & Analyzed Games</h1>
+      <div style="clear: both;"></div>
+      <div id="Activity" class="report"></div>
+      <h1>Login by Platform</h1>
+      <div style="clear: both;"></div>
+      <div id="LoginPlatform" class="report"></div>
+     </div>
+    <style>
+    h1 {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+    .report {
+     margin: 15px 0; 
+    }
+    </style>
     <script>
-      // Run queries and display results here
+      var RegistrationLine  = $('#Registration').MPChart({chartType: 'line'});
+      var SubscriptionPlatformLine  = $('#SubscriptionPlatform').MPChart({chartType: 'line'});
+      var MembershipLine  = $('#Membership').MPChart({chartType: 'line'});
+      var GamesPlatformLine  = $('#GamesPlatform').MPChart({chartType: 'line'});
+      var ActivityLine  = $('#Activity').MPChart({chartType: 'line'});
+      var LoginPlatformLine  = $('#LoginPlatform').MPChart({chartType: 'line'});
+     
+      var DayParams = {
+            from: '2015-12-13',
+            to: moment(),
+            type: 'general',
+            unit: 'day',
+      };
+      
+      var WeekParams = {
+            from: '2015-12-13',
+            to: moment(),
+            type: 'general',
+            unit: 'week',
+      };
+      
+      runQuery();
+       function runQuery() {
+        
+        //Registration Data
+        
+        MP.api.events('Start Registration', 'Complete Registration', DayParams).done(function(results) {
+            
+            RegistrationLine.MPChart('setData', results);
+        });
+        
+        //Subscription Data
+        
+        MP.api.segment('Subscription Purchased', 'Platform', WeekParams).done(function(results) {
+            
+            SubscriptionPlatformLine.MPChart('setData', results)
+        });
+        
+         //Membership Data
+        
+        MP.api.events('View Membership Page', 'View Checkout Page', WeekParams).done(function(results) {
+            
+            MembershipLine.MPChart('setData', results);
+        });
+        
+        //Game Completed Data
+        
+        MP.api.segment('Complete Game', 'Platform', WeekParams).done(function(results) {
+            
+            GamesPlatformLine.MPChart('setData', results);
+        });
+        
+        //Activity Data
+        
+        MP.api.events('Complete Tactic', 'Complete Lesson', 'Review Analyzed Game', 'Video Watched', WeekParams).done            (function(results) {
+            
+            ActivityLine.MPChart('setData', results);
+        });
+        
+        //Login Data
+        
+        MP.api.segment('Login', 'Platform', WeekParams).done(function(results) {
+            
+            LoginPlatformLine.MPChart('setData', results);
+        });
+        
+        }
+
     </script>
   </body>
 </html>
